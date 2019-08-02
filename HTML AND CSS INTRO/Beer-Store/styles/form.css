@@ -1,11 +1,11 @@
 form {
-    margin: auto;
+    margin: 0;
     text-align: center;
     }
 
 /*Necessary div container nesting for center the content <center
 tag is deprecated!>*/
-.mainFormContainer{
+.mainContainer{
     display: block;
     position: center;
 }
@@ -28,7 +28,6 @@ input, select{
     padding: 15px;
     border-radius:5px;
     border:1px solid #FE9E00;
-    alignment: center;
     }
 
 input[type="number"], input[type="date"], textarea{
@@ -46,7 +45,7 @@ textarea {
 }
 
 input[type=submit] {
-    width: 87%;
+    width: 88%;
     padding: 15px;
     border-radius:5px;
     border:1px solid #FE9E00;

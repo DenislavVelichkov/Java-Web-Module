@@ -44,3 +44,14 @@ main h1 {
     color: #feae00;
 }
 
+main table {
+    width: 100%;
+    border: 1px solid #FEAE00;
+    border-spacing: 0;
+}
+
+main th, td {
+    width: 25%;
+    padding: 15px;
+    text-align: left;
+}
