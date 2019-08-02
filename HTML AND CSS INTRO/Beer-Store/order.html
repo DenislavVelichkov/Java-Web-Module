@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/form.css">
+    <title>SoftUni Beers</title>
+</head>
+
+<body>
+<nav>
+    <div class="topnav">
+        <a class="logo" href="index.html"><img src="images/logo.png" alt="image of SoftUniBeerLogo"></a>
+        <a href="index.html">Home</a>
+        <a href="all-beers.html">See All Beers</a>
+        <a href="order.html">Order a Beer</a>
+        <a class="right active" href="register.html">Register</a>
+        <a class="right" href="login.html">Log in</a>
+    </div>
+</nav>
+
+<main>
+    <div class="mainContainer">
+        <h1>Order a Beer</h1>
+        <br/>
+        <div class="formContainer">
+            <form action="/order" method="post">
+                <label for="brandSelect">
+                    Brand
+                    <select name="brand" id="brandSelect">
+                        <option selected disabled>Select a brand</option>
+                        <option value="corona">Corona Extra 330ml</option>
+                        <option value="stella">Stella Artois 500ml</option>
+                        <option value="carlsberg">Carlsber 500ml</option>
+                        <option value="heineken">Heineken 500ml</option>
+                    </select>
+                </label>
+                <br/>
+                <label for="quantityInput">
+                    Quantity
+                    <input id="quantityInput" type="number" value="quantity" step="any" min="1" max="15">
+                </label>
+                <br/>
+                <label for="destinationInput">
+                    Select destination
+                    <select id="destinationInput" name="brand">
+                        <option selected disabled>Select destination</option>
+                        <option value="Sofia">Sofia</option>
+                        <option value="London">London</option>
+                        <option value="NY">New York</option>
+                    </select>
+                </label>
+                <br/>
+                <label for="birthDayInput">
+                    Birth Date
+                    <input id="birthDayInput" type="date">
+                </label>
+                <br/>
+                <label for="feedBackTextArea">
+                    Got an opinion ?
+                    <textarea id="feedBackTextArea" cols="30" rows="10"></textarea>
+                </label>
+                <br/>
+                <input type="submit" value="Order">
+            </form>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <hr/>
+    <p><em>&copy; 2017 &ndash; SoftUni Beers</em></p>
+</footer>
+</body>
+
+</html>

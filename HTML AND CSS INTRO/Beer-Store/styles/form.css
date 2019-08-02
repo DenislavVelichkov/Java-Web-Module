@@ -16,8 +16,7 @@ main h1 {
 
 .formContainer {
     margin: auto;
-    width: 25%;
-    text-align: center;
+    width: 35%;
 }
 
 /* Makes responsive fields. Sets size and field alignment.*/
@@ -32,20 +31,20 @@ input, select{
 
 input[type="number"], input[type="date"], textarea{
     display: block;
-    margin-bottom: 20px;
-    margin-top: 10px;
-    width:75%;
+    width: 69%;
+    margin: auto;
     padding: 15px;
     border-radius:5px;
     border:1px solid #FE9E00;
 }
 
 textarea {
-    resize: none;
+    width: 90%;
 }
 
 input[type=submit] {
-    width: 88%;
+    display: block;
+    margin: auto;
     padding: 15px;
     border-radius:5px;
     border:1px solid #FE9E00;
