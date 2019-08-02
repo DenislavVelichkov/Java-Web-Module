@@ -1,6 +1,6 @@
 body {
     background-color: #f9d977;
-    font-family: 'Calibri';
+    font-family: 'Calibri', monospace;
 }
 
 .topnav {
@@ -19,8 +19,7 @@ body {
 }
 
 .topnav a.logo {
-    padding: 0px;
-    padding-top: 4px;
+    padding: 4px 0 0;
 }
 
 .topnav a.right {
@@ -41,6 +40,7 @@ main h1 {
     font-size: 48px;
 }
 
-main span {
+#beerSpanId {
     color: #feae00;
 }
+

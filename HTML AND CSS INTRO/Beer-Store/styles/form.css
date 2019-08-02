@@ -1,20 +1,37 @@
 form {
-    width:50%;
-    margin: 0 auto;
+    margin: auto;
+    text-align: center;
     }
+
+/*Necessary div container nesting for center the content <center
+tag is deprecated!>*/
+.mainFormContainer{
+    display: block;
+    position: center;
+}
+
+main h1 {
+    text-align: center;
+}
+
+.formContainer {
+    margin: auto;
+    width: 25%;
+    text-align: center;
+}
 
 /* Makes responsive fields. Sets size and field alignment.*/
 input, select{
     display: block;
-    margin-bottom: 20px;
-    margin-top: 10px;
-    width:80%;
+    margin: auto;
+    width: 80%;
     padding: 15px;
     border-radius:5px;
     border:1px solid #FE9E00;
+    alignment: center;
     }
 
-input[type=number], input[type="date"], textarea{
+input[type="number"], input[type="date"], textarea{
     display: block;
     margin-bottom: 20px;
     margin-top: 10px;
@@ -29,8 +46,7 @@ textarea {
 }
 
 input[type=submit] {
-    margin-bottom: 20px;
-    width:80%;
+    width: 87%;
     padding: 15px;
     border-radius:5px;
     border:1px solid #FE9E00;

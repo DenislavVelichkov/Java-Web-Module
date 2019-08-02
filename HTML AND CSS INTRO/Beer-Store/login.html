@@ -14,44 +14,30 @@
         <a href="index.html">Home</a>
         <a href="all-beers.html">See All Beers</a>
         <a href="order.html">Order a Beer</a>
-        <a class="right active" href="register.html">Register</a>
-        <a class="right" href="login.html">Log in</a>
+        <a class="right" href="register.html">Register</a>
+        <a class="right active" href="login.html">Log in</a>
     </div>
 </nav>
 
 <main>
     <div class="mainFormContainer">
-        <h1>Register</h1>
-        <br>
+        <div class="h1Container">
+            <h1>Login</h1>
+        </div>
+        <br/>
         <div class="formContainer">
-            <br action="/register" method="post">
-                <label for="fullNameInput">
-                    Your Name
-                    <input id="fullNameInput" placeholder="Enter Name..." type="text" name="fullName">
-                </label>
-                <br/>
+            <form action="/login" method="post">
                 <label for="usernameInput">
                     Username
                     <input id="usernameInput" placeholder="Username" type="text" name="userName">
                 </label>
-                <br/>
-                <label for="emailInput">
-                    Email
-                    <input id="emailInput" placeholder="Email" type="email" name="email">
-                </label>
-                <br/>
+                <br>
                 <label for="passwordInput">
                     Password
                     <input id="passwordInput" placeholder="Password" type="password" name="password">
                 </label>
-                <br/>
-                <label for="confirmPasswordInput">
-                    Confirm Password
-                    <input id="confirmPasswordInput" placeholder="Confirm Password" type="password" ,
-                           name="confirmPassword">
-                </label>
-            <br>
-                <input type="submit" value="Register">
+                <br>
+                <input type="submit" value="Login">
             </form>
         </div>
     </div>
