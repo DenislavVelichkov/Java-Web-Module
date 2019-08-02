@@ -39,13 +39,10 @@ input[type="number"], input[type="date"], textarea{
 }
 
 textarea {
-    width: 90%;
+    resize: none;
 }
 
 input[type=submit] {
-    display: block;
-    margin: auto;
-    padding: 15px;
     border-radius:5px;
     border:1px solid #FE9E00;
     background-color: #FEAE00;
@@ -57,3 +54,8 @@ input[type=submit] {
 input[type=submit]:hover {
     background-color: #FE7300;
     }
+
+#actionBtnForms {
+    margin:auto;
+    width: 320px;
+}

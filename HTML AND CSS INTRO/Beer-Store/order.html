@@ -38,7 +38,11 @@
                 <br/>
                 <label for="quantityInput">
                     Quantity
-                    <input id="quantityInput" type="number" value="quantity" step="any" min="1" max="15">
+                    <input id="quantityInput"
+                           type="number"
+                           value="quantity"
+                           placeholder="Enter amount of beers (1-15)"
+                           step="any" min="1" max="15">
                 </label>
                 <br/>
                 <label for="destinationInput">
@@ -61,7 +65,7 @@
                     <textarea id="feedBackTextArea" cols="30" rows="10"></textarea>
                 </label>
                 <br/>
-                <input type="submit" value="Order">
+                <input id="actionBtnForms" type="submit" value="Order">
             </form>
         </div>
     </div>
