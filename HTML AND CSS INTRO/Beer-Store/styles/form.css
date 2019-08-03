@@ -15,15 +15,15 @@ main h1 {
 }
 
 .formContainer {
-    margin: auto;
-    width: 35%;
+    margin: 0;
+    width: inherit;
 }
 
 /* Makes responsive fields. Sets size and field alignment.*/
 input, select{
     display: block;
     margin: auto;
-    width: 80%;
+    width: 25%;
     padding: 15px;
     border-radius:5px;
     border:1px solid #FE9E00;
@@ -31,7 +31,7 @@ input, select{
 
 input[type="number"], input[type="date"], textarea{
     display: block;
-    width: 69%;
+    width: 445px;
     margin: auto;
     padding: 15px;
     border-radius:5px;
@@ -49,7 +49,8 @@ input[type=submit] {
     color: aliceblue;
     font-size:15px;
     cursor:pointer;
-    }
+    width: 508px;
+}
 
 input[type=submit]:hover {
     background-color: #FE7300;
@@ -57,5 +58,5 @@ input[type=submit]:hover {
 
 #actionBtnForms {
     margin:auto;
-    width: 320px;
+    width: 478px;
 }
