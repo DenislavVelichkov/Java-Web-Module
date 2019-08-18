@@ -67,28 +67,36 @@ public class HttpParserImpl implements HttpParser {
         if (this.isConnectionAuthorized() &&
                 this.isUrlPresent(urls) &&
                 this.isBodyPresent()) {
+
             this.httpResponse.setStatusCode(200);
             this.httpResponse.setBytes(ResponseMessages.OK.getBytes());
             this.httpResponse.setHeader(this.httpRequest.getHeaders());
             byte[] bodyContent = buildBodyContent(this.httpRequest.getBodyParameters());
             this.httpResponse.setContent(bodyContent);
+
         } else if (!this.isConnectionAuthorized()) {
+
             this.httpResponse.setStatusCode(401);
             this.httpResponse.setBytes(ResponseMessages.UNAUTHORIZED_ACCESS.getBytes());
             this.httpResponse.setHeader(this.httpRequest.getHeaders());
             this.httpResponse.setContent(
                     ResponseMessages.UNAUTHORIZED_REQUEST_BODY.getBytes());
+
         } else if (!this.isUrlPresent(urls)) {
+
             this.httpResponse.setStatusCode(404);
             this.httpResponse.setBytes(ResponseMessages.NOT_FOUND.getBytes());
             this.httpResponse.setHeader(this.httpRequest.getHeaders());
             this.httpResponse.setContent(ResponseMessages.NOT_FOUND_REQUEST_BODY.getBytes());
+
         } else if (!this.isBodyPresent()) {
+
             this.httpResponse.setStatusCode(400);
             this.httpResponse.setBytes(ResponseMessages.BAD_REQUEST.getBytes());
             this.httpResponse.setHeader(this.httpRequest.getHeaders());
             this.httpResponse.setContent(
                     ResponseMessages.BAD_REQUEST_BODY.getBytes());
+
         }
     }
 
