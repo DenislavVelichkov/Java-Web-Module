@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Map;
 
 public class HttpParserImpl implements HttpParser {
-    private final static String CORRECT_REQUEST_BODY =
-            "Greetings %s! You have successfully created %s with %s – %d, %s – %d.";
+    private final static String CORRECT_RESPONSE_BODY =
+            "Greetings %s! You have successfully created %s with %s – %s, %s – %s.";
     private final static String NOT_FOUND_REQUEST_BODY =
             "The requested functionality was not found";
     private final static String BAD_REQUEST_BODY =
@@ -65,12 +65,6 @@ public class HttpParserImpl implements HttpParser {
     }
 
     @Override
-    public boolean authenticateRequest(String[] urls, List<String> request) {
-        String[] tokens = request.get(0).split("\\s");
-        return Arrays.stream(urls).anyMatch(s -> s.equals(tokens[1]));
-    }
-
-    @Override
     public void createResponse() {
         if (argsContainsAuthorization(input) &&
                 authorizeAccess(this.input)) {
@@ -93,26 +87,35 @@ public class HttpParserImpl implements HttpParser {
         }
     }
 
-    private boolean isBodyPresent(List<String> input) {
-        return input.stream().anyMatch(s -> s.contains("&"));
-    }
-
     public byte[] buildContent(HashMap<String, String> bodyParameters) {
         StringBuilder sb = new StringBuilder();
 
         for (Map.Entry<String, String> entry : bodyParameters.entrySet()) {
-            if (entry.getKey().equals("name")) {
-
-            }
+            sb.append(entry.getKey()).append(" ").append(entry.getValue()).append(" ");
         }
+        String[] tokens = sb.toString().split("\\s");
 
-        return sb.toString().trim().getBytes();
+
+        return String.format(CORRECT_RESPONSE_BODY,
+                USER_NAME, tokens[1], tokens[2], tokens[3], tokens[4], tokens[5]).getBytes();
     }
 
     @Override
     public String sendResponse() {
         StringBuilder sb = new StringBuilder();
-
+        sb.append("HTTP/1.1 ")
+                .append(this.httpResponse.getStatusCode())
+                .append(" ")
+                .append(new String(this.httpResponse.getBytes()))
+        .append(System.lineSeparator());
+        this.httpResponse.getHeaders()
+                .forEach((key, value) ->
+                        sb.append(key)
+                                .append(" ")
+                                .append(value)
+                                .append(System.lineSeparator()));
+        sb.append(System.lineSeparator())
+        .append(new String(this.httpResponse.getContent()));
 
         return sb.toString().trim();
     }
@@ -132,8 +135,18 @@ public class HttpParserImpl implements HttpParser {
                         .get()
                         .split("\\s");
 
-        String authority = base64Parser.decodeString(encodedUsername[1]);
+        String authority = base64Parser.decodeString(encodedUsername[2]);
 
         return authority.equals(USER_NAME);
+    }
+
+    @Override
+    public boolean authenticateRequest(String[] urls, List<String> request) {
+        String[] tokens = request.get(0).split("\\s");
+        return Arrays.stream(urls).anyMatch(s -> s.equals(tokens[1]));
+    }
+
+    private boolean isBodyPresent(List<String> input) {
+        return input.stream().anyMatch(s -> s.contains("&"));
     }
 }
