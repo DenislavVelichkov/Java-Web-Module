@@ -3,6 +3,7 @@ package app.models;
 import app.models.interfaces.HttpRequest;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class HttpRequestImpl implements HttpRequest {
     private String requestURL;
@@ -11,8 +12,8 @@ public class HttpRequestImpl implements HttpRequest {
     private HashMap<String, String> bodyParameters;
 
     public HttpRequestImpl() {
-        this.headers = new HashMap<>();
-        this.bodyParameters = new HashMap<>();
+        this.headers = new LinkedHashMap<>();
+        this.bodyParameters = new LinkedHashMap<>();
     }
 
     @Override

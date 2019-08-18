@@ -4,15 +4,15 @@ import java.util.HashMap;
 import java.util.List;
 
 public interface HttpParser {
-    void createRequest(List<String> args);
+    void parseRequest();
 
     void createResponse();
 
     String sendResponse();
 
-    boolean authorizeAccess(String parameter);
+    boolean authorizeAccess(List<String> args);
 
-    boolean argsContainsParams(List<String> args);
+    boolean argsContainsAuthorization(List<String> args);
 
     boolean authenticateRequest(String[] urls, List<String> request);
 

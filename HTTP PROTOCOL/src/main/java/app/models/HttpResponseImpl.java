@@ -3,6 +3,7 @@ package app.models;
 import app.models.interfaces.HttpResponse;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class HttpResponseImpl implements HttpResponse {
     private HashMap<String, String> header;
@@ -11,7 +12,7 @@ public class HttpResponseImpl implements HttpResponse {
     private byte[] bytes;
 
     public HttpResponseImpl() {
-        this.header = new HashMap<>();
+        this.header = new LinkedHashMap<>();
     }
 
     @Override

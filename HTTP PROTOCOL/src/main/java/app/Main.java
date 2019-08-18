@@ -17,19 +17,17 @@ public class Main {
         List<String> request = new ArrayList<>();
 
         String input = "";
-        while (true) {
-            input = reader.readLine();
-
-            if (input.trim().isEmpty()) {
-                request.add(System.lineSeparator());
-                input = reader.readLine();
-                request.add(input);
-                break;
-            }
-
+        while ((input = reader.readLine()) != null && input.length() > 0) {
+            request.add(input);
+        }
+        request.add(System.lineSeparator());
+        while ((input = reader.readLine()) != null && input.length() > 0) {
             request.add(input);
         }
 
         HttpParser parser = new HttpParserImpl(request, urls);
+        parser.parseRequest();
+        parser.createResponse();
+        System.out.println(parser.sendResponse());
     }
 }

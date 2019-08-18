@@ -37,65 +37,31 @@ public class HttpParserImpl implements HttpParser {
     }
 
     @Override
-    public void createRequest(List<String> args) {
-        String[] tokens = args.get(0).split("\\s");
+    public void parseRequest() {
+        String[] tokens = this.input.get(0).split("\\s");
         this.httpRequest.setMethod(tokens[0]);
         this.httpRequest.setRequestUrl(tokens[1]);
 
-        args.forEach(arg -> {
-            String[] params = arg.split("\\s");
+        this.input
+                .stream()
+                .skip(1)
+                .filter(s -> !s.trim().isEmpty() && !s.contains("&") && !s.contains("Authorization:"))
+                .forEach(arg -> {
+                    String[] params = arg.split("\\s");
 
-            this.httpRequest.addHeader(params[0], params[1]);
+                    this.httpRequest.addHeader(params[0], params[1]);
+                });
+
+        this.input.stream().filter(s -> s.contains("&")).forEach(arg -> {
+            String[] bodyParams = arg.split("&");
+            Arrays.stream(bodyParams).forEach(param -> {
+                String[] element = param.split("=");
+
+                this.httpRequest.addBodyParameter(element[0], element[1]);
+            });
         });
 
-        args.forEach(arg -> {
-            String[] bodyParams = arg.split("\\s");
 
-            this.httpRequest.addBodyParameter(bodyParams[0], bodyParams[1]);
-        });
-
-        /*if (argsContainsParams(args) && authorizeAccess) {
-
-            sb.append("HTTP/1.1 200 OK").append(System.lineSeparator())
-                    .append(args.stream()
-                            .filter(s -> s.contains("Date"))
-                            .findFirst()
-                            .orElse(null)).append(System.lineSeparator())
-                    .append(args.stream()
-                            .filter(s -> s.contains("Host"))
-                            .findFirst()
-                            .orElse(null)).append(System.lineSeparator())
-                    .append(args.stream()
-                            .filter(s -> s.contains("Content-Type"))
-                            .findFirst()
-                            .orElse(null)).append(System.lineSeparator())
-                    .append(System.lineSeparator());
-
-            String[] body = args.get(args.size() - 1).split("&");
-            for (String s : body) {
-                String[] params = s.split("=");
-                switch (params[0]) {
-                    case "name":
-                        product = params[1];
-                        break;
-                    case "quantity":
-                        param1Name = params[0];
-                        param1Value = Integer.parseInt(params[1]);
-                        break;
-                    case "price":
-                        param2Name = params[0];
-                        param2value = Integer.parseInt(params[1].replace("/t", "").trim());
-                }
-            }
-
-            sb.append(String.format(CORRECT_REQUEST_BODY,
-                    AUTHORITY_NAME, product, param1Name, param1Value, param2Name, param2value));
-        }
-
-        if (!argsContainsParams(args)) {
-
-        }*/
-        this.createResponse();
     }
 
     @Override
@@ -106,7 +72,8 @@ public class HttpParserImpl implements HttpParser {
 
     @Override
     public void createResponse() {
-        if (argsContainsParams(input)) {
+        if (argsContainsAuthorization(input) &&
+                authorizeAccess(this.input)) {
             StringBuilder sb = new StringBuilder();
 
             this.httpResponse.setStatusCode(200);
@@ -117,12 +84,17 @@ public class HttpParserImpl implements HttpParser {
 
             byte[] result = buildContent(this.httpRequest.getBodyParameters());
             this.httpResponse.setContent(result);
-
-        } else if (!authorizeAccess(this.httpRequest.getBodyParameters().get("name"))) {
+        } else if (!this.argsContainsAuthorization(this.input)) {
             this.httpResponse.setStatusCode(401);
         } else if (authenticateRequest(urls, input)) {
-
+            this.httpResponse.setStatusCode(404);
+        } else if (isBodyPresent(this.input)) {
+            this.httpResponse.setStatusCode(400);
         }
+    }
+
+    private boolean isBodyPresent(List<String> input) {
+        return input.stream().anyMatch(s -> s.contains("&"));
     }
 
     public byte[] buildContent(HashMap<String, String> bodyParameters) {
@@ -130,34 +102,38 @@ public class HttpParserImpl implements HttpParser {
 
         for (Map.Entry<String, String> entry : bodyParameters.entrySet()) {
             if (entry.getKey().equals("name")) {
-                sb.append("")
+
             }
         }
+
+        return sb.toString().trim().getBytes();
     }
 
     @Override
     public String sendResponse() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("")
 
-        return null;
+        return sb.toString().trim();
     }
 
     @Override
-    public boolean argsContainsParams(List<String> args) {
-        boolean datePresent = args.stream().anyMatch(s -> s.contains("Date:"));
-        boolean hostPresent = args.stream().anyMatch(s -> s.contains("Host:"));
-        boolean contentTypePresent = args.stream().anyMatch(s -> s.contains("Content-Type:"));
-
-        return datePresent && hostPresent && contentTypePresent;
+    public boolean argsContainsAuthorization(List<String> args) {
+        return args.stream().anyMatch(s -> s.contains("Authorization:"));
     }
 
     @Override
-    public boolean authorizeAccess(String parameter) {
-        String authority = base64Parser.decodeString(parameter);
+    public boolean authorizeAccess(List<String> args) {
+        String[] encodedUsername =
+                this.input
+                        .stream()
+                        .filter(s -> s.contains("Authorization:"))
+                        .findAny()
+                        .get()
+                        .split("\\s");
+
+        String authority = base64Parser.decodeString(encodedUsername[1]);
 
         return authority.equals(USER_NAME);
     }
-
 }
