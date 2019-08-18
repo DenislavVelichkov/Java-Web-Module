@@ -11,11 +11,13 @@ public interface HttpResponse {
 
     byte[] getBytes();
 
-    byte[] setBytes(byte[] bytes);
+    void setBytes(byte[] bytes);
 
     void setStatusCode(int statusCode);
 
     void setContent(byte[] content);
 
     void addHeader(String header, String value);
+
+    void setHeader(HashMap<String, String> header);
 }

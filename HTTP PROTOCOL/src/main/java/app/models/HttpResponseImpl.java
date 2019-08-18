@@ -26,23 +26,13 @@ public class HttpResponseImpl implements HttpResponse {
     }
 
     @Override
-    public byte[] getContent() {
-        return this.content;
-    }
-
-    @Override
-    public byte[] getBytes() {
-        return this.bytes;
-    }
-
-    @Override
-    public byte[] setBytes(byte[] bytes) {
-        return this.bytes = bytes;
-    }
-
-    @Override
     public void setStatusCode(int statusCode) {
         this.statusCode = statusCode;
+    }
+
+    @Override
+    public byte[] getContent() {
+        return this.content;
     }
 
     @Override
@@ -51,7 +41,22 @@ public class HttpResponseImpl implements HttpResponse {
     }
 
     @Override
+    public byte[] getBytes() {
+        return this.bytes;
+    }
+
+    @Override
+    public void setBytes(byte[] bytes) {
+        this.bytes = bytes;
+    }
+
+    @Override
     public void addHeader(String header, String value) {
         this.header.put(header, value);
+    }
+
+    @Override
+    public void setHeader(HashMap<String, String> header) {
+        this.header = header;
     }
 }

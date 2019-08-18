@@ -1,7 +1,6 @@
 package app.util.interfaces;
 
 import java.util.HashMap;
-import java.util.List;
 
 public interface HttpParser {
     void parseRequest();
@@ -10,11 +9,13 @@ public interface HttpParser {
 
     String sendResponse();
 
-    boolean authorizeAccess(List<String> args);
+    boolean argsContainsAuthorization();
 
-    boolean argsContainsAuthorization(List<String> args);
+    boolean isUrlPresent(String[] urls);
 
-    boolean authenticateRequest(String[] urls, List<String> request);
+    byte[] buildBodyContent(HashMap<String, String> bodyParameters);
 
-    byte[] buildContent(HashMap<String, String> bodyParameters);
+    boolean isBodyPresent();
+
+    boolean isDatePresent();
 }

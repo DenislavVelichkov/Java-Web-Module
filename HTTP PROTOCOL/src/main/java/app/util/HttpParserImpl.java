@@ -1,5 +1,6 @@
 package app.util;
 
+import app.common.ResponseMessages;
 import app.models.HttpRequestImpl;
 import app.models.HttpResponseImpl;
 import app.models.interfaces.HttpRequest;
@@ -13,15 +14,6 @@ import java.util.List;
 import java.util.Map;
 
 public class HttpParserImpl implements HttpParser {
-    private final static String CORRECT_RESPONSE_BODY =
-            "Greetings %s! You have successfully created %s with %s – %s, %s – %s.";
-    private final static String NOT_FOUND_REQUEST_BODY =
-            "The requested functionality was not found";
-    private final static String BAD_REQUEST_BODY =
-            "There was an error with the requested functionality due to malformed request.";
-    private final static String UNAUTHORIZED_REQUEST_BODY =
-            "You are not authorized to access the requested functionality.";
-    private final static String USER_NAME = "Pesho";
     private List<String> input;
     private String[] urls;
     private Base64Parser base64Parser;
@@ -42,10 +34,16 @@ public class HttpParserImpl implements HttpParser {
         this.httpRequest.setMethod(tokens[0]);
         this.httpRequest.setRequestUrl(tokens[1]);
 
+        if (!isDatePresent()) {
+            this.httpRequest.addHeader("Date:", ResponseMessages.DEFAULT_DATE);
+        }
+
         this.input
                 .stream()
                 .skip(1)
-                .filter(s -> !s.trim().isEmpty() && !s.contains("&") && !s.contains("Authorization:"))
+                .filter(s -> !s.trim().isEmpty() &&
+                        !s.contains("&") &&
+                        !s.contains("Authorization:"))
                 .forEach(arg -> {
                     String[] params = arg.split("\\s");
 
@@ -66,28 +64,35 @@ public class HttpParserImpl implements HttpParser {
 
     @Override
     public void createResponse() {
-        if (argsContainsAuthorization(input) &&
-                authorizeAccess(this.input)) {
-            StringBuilder sb = new StringBuilder();
-
+        if (this.argsContainsAuthorization() &&
+                this.isUrlPresent(urls) &&
+                this.isBodyPresent()) {
             this.httpResponse.setStatusCode(200);
-            this.httpResponse.setBytes("OK".getBytes());
-            for (Map.Entry<String, String> entry : this.httpRequest.getHeaders().entrySet()) {
-                this.httpResponse.addHeader(entry.getKey(), entry.getValue());
-            }
-
-            byte[] result = buildContent(this.httpRequest.getBodyParameters());
-            this.httpResponse.setContent(result);
-        } else if (!this.argsContainsAuthorization(this.input)) {
+            this.httpResponse.setBytes(ResponseMessages.OK.getBytes());
+            this.httpResponse.setHeader(this.httpRequest.getHeaders());
+            byte[] bodyContent = buildBodyContent(this.httpRequest.getBodyParameters());
+            this.httpResponse.setContent(bodyContent);
+        } else if (!this.argsContainsAuthorization()) {
             this.httpResponse.setStatusCode(401);
-        } else if (authenticateRequest(urls, input)) {
+            this.httpResponse.setBytes(ResponseMessages.UNAUTHORIZED_ACCESS.getBytes());
+            this.httpResponse.setHeader(this.httpRequest.getHeaders());
+            this.httpResponse.setContent(
+                    ResponseMessages.UNAUTHORIZED_REQUEST_BODY.getBytes());
+        } else if (!this.isUrlPresent(urls)) {
             this.httpResponse.setStatusCode(404);
-        } else if (isBodyPresent(this.input)) {
+            this.httpResponse.setBytes(ResponseMessages.NOT_FOUND.getBytes());
+            this.httpResponse.setHeader(this.httpRequest.getHeaders());
+            this.httpResponse.setContent(ResponseMessages.NOT_FOUND_REQUEST_BODY.getBytes());
+        } else if (!this.isBodyPresent()) {
             this.httpResponse.setStatusCode(400);
+            this.httpResponse.setBytes(ResponseMessages.BAD_REQUEST.getBytes());
+            this.httpResponse.setHeader(this.httpRequest.getHeaders());
+            this.httpResponse.setContent(
+                    ResponseMessages.BAD_REQUEST_BODY.getBytes());
         }
     }
 
-    public byte[] buildContent(HashMap<String, String> bodyParameters) {
+    public byte[] buildBodyContent(HashMap<String, String> bodyParameters) {
         StringBuilder sb = new StringBuilder();
 
         for (Map.Entry<String, String> entry : bodyParameters.entrySet()) {
@@ -96,8 +101,8 @@ public class HttpParserImpl implements HttpParser {
         String[] tokens = sb.toString().split("\\s");
 
 
-        return String.format(CORRECT_RESPONSE_BODY,
-                USER_NAME, tokens[1], tokens[2], tokens[3], tokens[4], tokens[5]).getBytes();
+        return String.format(ResponseMessages.CORRECT_RESPONSE_BODY,
+                ResponseMessages.USER_NAME, tokens[1], tokens[2], tokens[3], tokens[4], tokens[5]).getBytes();
     }
 
     @Override
@@ -107,7 +112,7 @@ public class HttpParserImpl implements HttpParser {
                 .append(this.httpResponse.getStatusCode())
                 .append(" ")
                 .append(new String(this.httpResponse.getBytes()))
-        .append(System.lineSeparator());
+                .append(System.lineSeparator());
         this.httpResponse.getHeaders()
                 .forEach((key, value) ->
                         sb.append(key)
@@ -115,38 +120,42 @@ public class HttpParserImpl implements HttpParser {
                                 .append(value)
                                 .append(System.lineSeparator()));
         sb.append(System.lineSeparator())
-        .append(new String(this.httpResponse.getContent()));
+                .append(new String(this.httpResponse.getContent()));
 
         return sb.toString().trim();
     }
 
     @Override
-    public boolean argsContainsAuthorization(List<String> args) {
-        return args.stream().anyMatch(s -> s.contains("Authorization:"));
-    }
-
-    @Override
-    public boolean authorizeAccess(List<String> args) {
-        String[] encodedUsername =
-                this.input
-                        .stream()
-                        .filter(s -> s.contains("Authorization:"))
+    public boolean argsContainsAuthorization() {
+        String username = "";
+        String encodedUsername =
+                this.input.stream().filter(s -> s.contains("Authorization:"))
                         .findAny()
-                        .get()
-                        .split("\\s");
+                        .orElse(null);
+        if (encodedUsername != null) {
+            String[] tokens = encodedUsername.split("\\s");
+            encodedUsername = tokens[2];
+        }
 
-        String authority = base64Parser.decodeString(encodedUsername[2]);
+        username = this.base64Parser.decodeString(encodedUsername);
 
-        return authority.equals(USER_NAME);
+        return this.input.stream()
+                .anyMatch(s -> s.contains("Authorization:")) && username.equals(ResponseMessages.USER_NAME);
     }
 
     @Override
-    public boolean authenticateRequest(String[] urls, List<String> request) {
-        String[] tokens = request.get(0).split("\\s");
+    public boolean isUrlPresent(String[] urls) {
+        String[] tokens = this.input.get(0).split("\\s");
         return Arrays.stream(urls).anyMatch(s -> s.equals(tokens[1]));
     }
 
-    private boolean isBodyPresent(List<String> input) {
+    @Override
+    public boolean isBodyPresent() {
         return input.stream().anyMatch(s -> s.contains("&"));
+    }
+
+    @Override
+    public boolean isDatePresent() {
+        return this.input.stream().anyMatch(s -> s.contains("Date:"));
     }
 }
