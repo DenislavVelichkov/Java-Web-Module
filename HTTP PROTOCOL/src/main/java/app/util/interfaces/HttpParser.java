@@ -9,7 +9,7 @@ public interface HttpParser {
 
     String sendResponse();
 
-    boolean argsContainsAuthorization();
+    boolean isConnectionAuthorized();
 
     boolean isUrlPresent(String[] urls);
 

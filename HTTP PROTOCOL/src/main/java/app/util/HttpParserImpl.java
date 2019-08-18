@@ -64,7 +64,7 @@ public class HttpParserImpl implements HttpParser {
 
     @Override
     public void createResponse() {
-        if (this.argsContainsAuthorization() &&
+        if (this.isConnectionAuthorized() &&
                 this.isUrlPresent(urls) &&
                 this.isBodyPresent()) {
             this.httpResponse.setStatusCode(200);
@@ -72,7 +72,7 @@ public class HttpParserImpl implements HttpParser {
             this.httpResponse.setHeader(this.httpRequest.getHeaders());
             byte[] bodyContent = buildBodyContent(this.httpRequest.getBodyParameters());
             this.httpResponse.setContent(bodyContent);
-        } else if (!this.argsContainsAuthorization()) {
+        } else if (!this.isConnectionAuthorized()) {
             this.httpResponse.setStatusCode(401);
             this.httpResponse.setBytes(ResponseMessages.UNAUTHORIZED_ACCESS.getBytes());
             this.httpResponse.setHeader(this.httpRequest.getHeaders());
@@ -92,6 +92,7 @@ public class HttpParserImpl implements HttpParser {
         }
     }
 
+    @Override
     public byte[] buildBodyContent(HashMap<String, String> bodyParameters) {
         StringBuilder sb = new StringBuilder();
 
@@ -126,7 +127,7 @@ public class HttpParserImpl implements HttpParser {
     }
 
     @Override
-    public boolean argsContainsAuthorization() {
+    public boolean isConnectionAuthorized() {
         String username = "";
         String encodedUsername =
                 this.input.stream().filter(s -> s.contains("Authorization:"))
