@@ -5,7 +5,6 @@ import java.util.*;
 
 public class Main {
     class ResponseMessages {
-        public final static String DEFAULT_DATE = "17/01/2019";
         public final static String CORRECT_RESPONSE_BODY =
                 "Greetings %s! You have successfully created %s with %s - %s, %s - %s.";
         public final static String NOT_FOUND_REQUEST_BODY =
@@ -21,18 +20,17 @@ public class Main {
         public final static String OK = "HTTP/1.1 200 OK";
     }
 
-    public static String requestURL;
     public static String method;
+    public static String requestURL;
+    public static String username;
     public static HashMap<String, String> headers = new LinkedHashMap<>();
     public static HashMap<String, String> bodyParameters = new LinkedHashMap<>();
 
     public static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
-
         String[] urls = reader.readLine().split("\\s");
         List<String> request = new ArrayList<>();
-
 
         String input = "";
         while ((input = reader.readLine()) != null && input.length() > 0) {
@@ -60,24 +58,21 @@ public class Main {
             sb.append(System.lineSeparator());
             sb.append(buildBodyContent());
 
-        }
-        if (!isUrlPresent(urls, request)) {
+        } else if (!isUrlPresent(urls, request)) {
 
             sb.append(ResponseMessages.NOT_FOUND).append(System.lineSeparator());
             headers.forEach((key, value) -> sb.append(key).append(" ").append(value).append(System.lineSeparator()));
             sb.append(System.lineSeparator());
             sb.append(ResponseMessages.NOT_FOUND_REQUEST_BODY);
 
-        }
-        if (!isConnectionAuthorized(request)) {
+        } else if (!isConnectionAuthorized(request)) {
 
             sb.append(ResponseMessages.UNAUTHORIZED_ACCESS).append(System.lineSeparator());
             headers.forEach((key, value) -> sb.append(key).append(" ").append(value).append(System.lineSeparator()));
             sb.append(System.lineSeparator());
             sb.append(ResponseMessages.UNAUTHORIZED_REQUEST_BODY);
 
-        }
-        if (!isBodyPresent(request)) {
+        } else if (!isBodyPresent(request)) {
 
             sb.append(ResponseMessages.BAD_REQUEST).append(System.lineSeparator());
             headers.forEach((key, value) -> sb.append(key).append(" ").append(value).append(System.lineSeparator()));
@@ -99,7 +94,7 @@ public class Main {
     }
 
     private static boolean isConnectionAuthorized(List<String> input) {
-        String username = "";
+//        String username = "";
         String encodedUsername =
                 input.stream().filter(s -> s.contains("Authorization:"))
                         .findAny()
@@ -114,7 +109,7 @@ public class Main {
 
 
         return input.stream()
-                .anyMatch(s -> s.contains("Authorization:")) && username.equals(ResponseMessages.USER_NAME);
+                .anyMatch(s -> s.contains("Authorization:")); /*&& username.equals(ResponseMessages.USER_NAME);*/
     }
 
     private static String buildBodyContent() {
@@ -127,7 +122,7 @@ public class Main {
 
 
         return String.format(ResponseMessages.CORRECT_RESPONSE_BODY,
-                ResponseMessages.USER_NAME, tokens[1], tokens[2], tokens[3], tokens[4], tokens[5]);
+                username, tokens[1], tokens[2], tokens[3], tokens[4], tokens[5]);
     }
 
     private static void parseRequest(List<String> input) {
@@ -138,14 +133,14 @@ public class Main {
         input
                 .stream()
                 .skip(1)
-                .filter(s -> !s.trim().isEmpty() &&
-                        !s.contains("&") &&
-                        !s.contains("Authorization:"))
+                .filter(s -> !s.trim().isEmpty()
+                        && !s.contains("&")
+                        && !s.contains("Authorization:"))
                 .forEach(arg -> {
                     String[] params = arg.split("\\s");
-                    if (params[0].equals("Date:") ||
-                            params[0].equals("Host:") ||
-                            params[0].equals("Content-Type:")) {
+                    if (params[0].equals("Date:")
+                            || params[0].equals("Host:")
+                            || params[0].equals("Content-Type:")) {
                         headers.put(params[0], params[1]);
                     }
                 });
@@ -158,9 +153,5 @@ public class Main {
                 bodyParameters.put(element[0], element[1]);
             });
         });
-    }
-
-    private static boolean isDatePresent(List<String> input) {
-        return input.stream().anyMatch(s -> s.contains("Date:"));
     }
 }
