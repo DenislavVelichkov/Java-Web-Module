@@ -10,6 +10,7 @@ public class HttpResponseImpl implements HttpResponse {
     private int statusCode;
     private byte[] content;
     private byte[] bytes;
+    private String statusString;
 
     public HttpResponseImpl() {
         this.header = new LinkedHashMap<>();
@@ -43,6 +44,16 @@ public class HttpResponseImpl implements HttpResponse {
     @Override
     public byte[] getBytes() {
         return this.bytes;
+    }
+
+    @Override
+    public void setStatusString(String str) {
+        this.statusString = str;
+    }
+
+    @Override
+    public String getStatusString() {
+        return this.statusString;
     }
 
     @Override

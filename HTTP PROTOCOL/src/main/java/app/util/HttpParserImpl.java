@@ -46,8 +46,11 @@ public class HttpParserImpl implements HttpParser {
                         !s.contains("Authorization:"))
                 .forEach(arg -> {
                     String[] params = arg.split("\\s");
-
-                    this.httpRequest.addHeader(params[0], params[1]);
+                    if (params[0].equals("Date:") ||
+                            params[0].equals("Host:") ||
+                            params[0].equals("Content-Type:")) {
+                        this.httpRequest.addHeader(params[0], params[1]);
+                    }
                 });
 
         this.input.stream().filter(s -> s.contains("&")).forEach(arg -> {
@@ -69,7 +72,7 @@ public class HttpParserImpl implements HttpParser {
                 this.isBodyPresent()) {
 
             this.httpResponse.setStatusCode(200);
-            this.httpResponse.setBytes(ResponseMessages.OK.getBytes());
+            this.httpResponse.setStatusString(ResponseMessages.OK);
             this.httpResponse.setHeader(this.httpRequest.getHeaders());
             byte[] bodyContent = buildBodyContent(this.httpRequest.getBodyParameters());
             this.httpResponse.setContent(bodyContent);
@@ -77,7 +80,7 @@ public class HttpParserImpl implements HttpParser {
         } else if (!this.isConnectionAuthorized()) {
 
             this.httpResponse.setStatusCode(401);
-            this.httpResponse.setBytes(ResponseMessages.UNAUTHORIZED_ACCESS.getBytes());
+            this.httpResponse.setStatusString(ResponseMessages.UNAUTHORIZED_ACCESS);
             this.httpResponse.setHeader(this.httpRequest.getHeaders());
             this.httpResponse.setContent(
                     ResponseMessages.UNAUTHORIZED_REQUEST_BODY.getBytes());
@@ -85,14 +88,14 @@ public class HttpParserImpl implements HttpParser {
         } else if (!this.isUrlPresent(urls)) {
 
             this.httpResponse.setStatusCode(404);
-            this.httpResponse.setBytes(ResponseMessages.NOT_FOUND.getBytes());
+            this.httpResponse.setStatusString(ResponseMessages.NOT_FOUND);
             this.httpResponse.setHeader(this.httpRequest.getHeaders());
             this.httpResponse.setContent(ResponseMessages.NOT_FOUND_REQUEST_BODY.getBytes());
 
         } else if (!this.isBodyPresent()) {
 
             this.httpResponse.setStatusCode(400);
-            this.httpResponse.setBytes(ResponseMessages.BAD_REQUEST.getBytes());
+            this.httpResponse.setStatusString((ResponseMessages.BAD_REQUEST));
             this.httpResponse.setHeader(this.httpRequest.getHeaders());
             this.httpResponse.setContent(
                     ResponseMessages.BAD_REQUEST_BODY.getBytes());
@@ -120,7 +123,7 @@ public class HttpParserImpl implements HttpParser {
         sb.append("HTTP/1.1 ")
                 .append(this.httpResponse.getStatusCode())
                 .append(" ")
-                .append(new String(this.httpResponse.getBytes()))
+                .append(this.httpResponse.getStatusString())
                 .append(System.lineSeparator());
         this.httpResponse.getHeaders()
                 .forEach((key, value) ->
@@ -130,8 +133,9 @@ public class HttpParserImpl implements HttpParser {
                                 .append(System.lineSeparator()));
         sb.append(System.lineSeparator())
                 .append(new String(this.httpResponse.getContent()));
+        this.httpResponse.setBytes(sb.toString().trim().getBytes());
 
-        return sb.toString().trim();
+        return new String(this.httpResponse.getBytes());
     }
 
     @Override
