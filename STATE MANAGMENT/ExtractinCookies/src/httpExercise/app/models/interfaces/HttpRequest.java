@@ -1,4 +1,4 @@
-package app.models.interfaces;
+package httpExercise.app.models.interfaces;
 
 import java.util.HashMap;
 
@@ -18,6 +18,8 @@ public interface HttpRequest {
     void addHeader(String header, String value);
 
     void addBodyParameter(String parameter, String value);
+
+    Cookie getCookie();
 
     boolean isResource();
 }

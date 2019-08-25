@@ -1,6 +1,6 @@
-package app.util;
+package httpExercise.app.util;
 
-import app.util.interfaces.Base64Parser;
+import httpExercise.app.util.interfaces.Base64Parser;
 
 import java.util.Base64;
 

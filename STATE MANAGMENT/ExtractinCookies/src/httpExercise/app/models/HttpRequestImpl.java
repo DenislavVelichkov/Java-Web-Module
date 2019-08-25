@@ -1,6 +1,7 @@
-package app.models;
+package httpExercise.app.models;
 
-import app.models.interfaces.HttpRequest;
+import httpExercise.app.models.interfaces.Cookie;
+import httpExercise.app.models.interfaces.HttpRequest;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -10,10 +11,12 @@ public class HttpRequestImpl implements HttpRequest {
     private String method;
     private HashMap<String, String> headers;
     private HashMap<String, String> bodyParameters;
+    private Cookie cookie;
 
     public HttpRequestImpl() {
         this.headers = new LinkedHashMap<>();
         this.bodyParameters = new LinkedHashMap<>();
+        this.cookie = new CookieImpl();
     }
 
     @Override
@@ -54,6 +57,11 @@ public class HttpRequestImpl implements HttpRequest {
     @Override
     public void addBodyParameter(String parameter, String value) {
         this.bodyParameters.put(parameter, value);
+    }
+
+    @Override
+    public Cookie getCookie() {
+        return this.cookie;
     }
 
     @Override

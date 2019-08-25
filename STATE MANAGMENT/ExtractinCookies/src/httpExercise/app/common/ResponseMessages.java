@@ -1,4 +1,4 @@
-package app.common;
+package httpExercise.app.common;
 
 public class ResponseMessages {
     public final static String DEFAULT_DATE = "17/01/2019";

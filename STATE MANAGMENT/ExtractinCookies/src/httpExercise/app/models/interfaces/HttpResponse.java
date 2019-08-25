@@ -1,4 +1,4 @@
-package app.models.interfaces;
+package httpExercise.app.models.interfaces;
 
 import java.util.HashMap;
 

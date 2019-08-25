@@ -1,7 +1,7 @@
-package app;
+package httpExercise.app;
 
-import app.util.HttpParserImpl;
-import app.util.interfaces.HttpParser;
+import httpExercise.app.util.HttpParserImpl;
+import httpExercise.app.util.interfaces.HttpParser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,5 +29,6 @@ public class Main {
         parser.parseRequest();
         parser.createResponse();
         System.out.println(parser.sendResponse());
+        System.out.println(parser.printCookie());
     }
 }

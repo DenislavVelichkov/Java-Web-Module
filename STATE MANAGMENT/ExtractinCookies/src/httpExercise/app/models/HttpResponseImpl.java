@@ -1,6 +1,6 @@
-package app.models;
+package httpExercise.app.models;
 
-import app.models.interfaces.HttpResponse;
+import httpExercise.app.models.interfaces.HttpResponse;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;

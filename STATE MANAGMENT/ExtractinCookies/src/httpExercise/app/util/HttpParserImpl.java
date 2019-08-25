@@ -1,12 +1,12 @@
-package app.util;
+package httpExercise.app.util;
 
-import app.common.ResponseMessages;
-import app.models.HttpRequestImpl;
-import app.models.HttpResponseImpl;
-import app.models.interfaces.HttpRequest;
-import app.models.interfaces.HttpResponse;
-import app.util.interfaces.Base64Parser;
-import app.util.interfaces.HttpParser;
+import httpExercise.app.common.ResponseMessages;
+import httpExercise.app.models.HttpRequestImpl;
+import httpExercise.app.models.HttpResponseImpl;
+import httpExercise.app.models.interfaces.HttpRequest;
+import httpExercise.app.models.interfaces.HttpResponse;
+import httpExercise.app.util.interfaces.Base64Parser;
+import httpExercise.app.util.interfaces.HttpParser;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -19,6 +19,7 @@ public class HttpParserImpl implements HttpParser {
     private Base64Parser base64Parser;
     private HttpRequest httpRequest;
     private HttpResponse httpResponse;
+
 
     public HttpParserImpl(List<String> input, String[] urls) {
         this.input = input;
@@ -33,10 +34,6 @@ public class HttpParserImpl implements HttpParser {
         String[] tokens = this.input.get(0).split("\\s");
         this.httpRequest.setMethod(tokens[0]);
         this.httpRequest.setRequestUrl(tokens[1]);
-
-        if (!isDatePresent()) {
-            this.httpRequest.addHeader("Date:", ResponseMessages.DEFAULT_DATE);
-        }
 
         this.input
                 .stream()
@@ -62,7 +59,24 @@ public class HttpParserImpl implements HttpParser {
             });
         });
 
+        if (this.containsCookie(input)) {
+            String[] tokenParams =
+                    this.input.stream()
+                            .filter(s -> s.contains("Cookie:"))
+                            .findFirst()
+                            .get()
+                            .split("\\s");
 
+            Arrays.stream(tokenParams).skip(1).forEach(arg -> {
+                String[] input = arg.split("=");
+
+                this.httpRequest.getCookie().setCookie(input[0].replace(";",""), input[1].replace(";",""));
+            });
+        }
+    }
+
+    private boolean containsCookie(List<String> input) {
+        return input.stream().anyMatch(s -> s.contains("Cookie:"));
     }
 
     @Override
@@ -74,7 +88,7 @@ public class HttpParserImpl implements HttpParser {
             this.httpResponse.setStatusCode(200);
             this.httpResponse.setStatusString(ResponseMessages.OK);
             this.httpResponse.setHeader(this.httpRequest.getHeaders());
-            byte[] bodyContent = buildBodyContent(this.httpRequest.getBodyParameters());
+            byte[] bodyContent = this.buildBodyContent(this.httpRequest.getBodyParameters());
             this.httpResponse.setContent(bodyContent);
 
         } else if (!this.isConnectionAuthorized()) {
@@ -103,8 +117,7 @@ public class HttpParserImpl implements HttpParser {
         }
     }
 
-    @Override
-    public byte[] buildBodyContent(HashMap<String, String> bodyParameters) {
+    private byte[] buildBodyContent(HashMap<String, String> bodyParameters) {
         StringBuilder sb = new StringBuilder();
 
         for (Map.Entry<String, String> entry : bodyParameters.entrySet()) {
@@ -135,11 +148,11 @@ public class HttpParserImpl implements HttpParser {
                 .append(new String(this.httpResponse.getContent()));
         this.httpResponse.setBytes(sb.toString().trim().getBytes());
 
+
         return new String(this.httpResponse.getBytes());
     }
 
-    @Override
-    public boolean isConnectionAuthorized() {
+    private boolean isConnectionAuthorized() {
         String username = "";
         String encodedUsername =
                 this.input.stream().filter(s -> s.contains("Authorization:"))
@@ -156,19 +169,22 @@ public class HttpParserImpl implements HttpParser {
                 .anyMatch(s -> s.contains("Authorization:")) && username.equals(ResponseMessages.USER_NAME);
     }
 
-    @Override
-    public boolean isUrlPresent(String[] urls) {
+
+    private boolean isUrlPresent(String[] urls) {
         String[] tokens = this.input.get(0).split("\\s");
         return Arrays.stream(urls).anyMatch(s -> s.equals(tokens[1]));
     }
 
-    @Override
-    public boolean isBodyPresent() {
+    private boolean isBodyPresent() {
         return input.stream().anyMatch(s -> s.contains("&"));
     }
 
-    @Override
-    public boolean isDatePresent() {
+    private boolean isDatePresent() {
         return this.input.stream().anyMatch(s -> s.contains("Date:"));
+    }
+
+    @Override
+    public String printCookie() {
+        return this.httpRequest.getCookie().toString();
     }
 }

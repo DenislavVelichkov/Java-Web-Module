@@ -1,4 +1,4 @@
-package app.util.interfaces;
+package httpExercise.app.util.interfaces;
 
 public interface Base64Parser {
 
