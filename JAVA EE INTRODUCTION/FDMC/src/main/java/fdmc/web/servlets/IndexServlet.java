@@ -9,10 +9,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 
 @WebServlet("/")
 public class IndexServlet extends HttpServlet {
+    private final static String HTML_INDEX_PATH =
+            "G:\\SoftUni\\SoftUni-source-code\\Java-Web-Module-January-2019\\" +
+            "JAVA EE INTRODUCTION\\FDMC\\src\\resources\\views\\index.html";
+
     private final HtmlReader htmlReader;
 
     @Inject
@@ -22,8 +25,7 @@ public class IndexServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        PrintWriter writer = resp.getWriter();
 
-        writer.println("Hello Java World ! <3");
+        resp.getWriter().println(htmlReader.readHtmlFile(HTML_INDEX_PATH));
     }
 }
