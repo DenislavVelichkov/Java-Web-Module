@@ -4,9 +4,6 @@ import java.io.*;
 
 public class HtmlReaderImpl implements HtmlReader {
 
-    public HtmlReaderImpl() {
-    }
-
     @Override
     public String readHtmlFile(String htmlFilePath) throws IOException {
         BufferedReader reader =
@@ -20,6 +17,7 @@ public class HtmlReaderImpl implements HtmlReader {
         while ((line = reader.readLine()) != null && line.length() > 0) {
             sb.append(line).append(System.lineSeparator());
         }
-            return sb.toString();
+
+        return sb.toString();
     }
 }

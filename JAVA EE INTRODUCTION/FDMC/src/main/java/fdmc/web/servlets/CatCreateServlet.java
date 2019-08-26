@@ -14,8 +14,7 @@ import java.io.IOException;
 @WebServlet("/cats/create")
 public class CatCreateServlet extends HttpServlet {
     private final static String CAT_CREATE_HTML_PATH =
-            "G:\\SoftUni\\SoftUni-source-code\\Java-Web-Module-January-2019\\" +
-            "JAVA EE INTRODUCTION\\FDMC\\src\\resources\\views\\cat-create.html";
+            "G:\\SoftUni\\SoftUni-source-code\\Java-Web-Module-January-2019\\JAVA EE INTRODUCTION\\FDMC\\src\\resources\\views\\cats-create.html";
 
     private final HtmlReader htmlReader;
 
@@ -28,8 +27,6 @@ public class CatCreateServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         resp.getWriter().println(this.htmlReader.readHtmlFile(CAT_CREATE_HTML_PATH));
-
-        System.out.println();
     }
 
     @Override
