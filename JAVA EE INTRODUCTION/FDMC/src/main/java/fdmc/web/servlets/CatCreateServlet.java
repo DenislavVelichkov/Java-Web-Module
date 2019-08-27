@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @WebServlet("/cats/create")
 public class CatCreateServlet extends HttpServlet {
@@ -36,5 +38,13 @@ public class CatCreateServlet extends HttpServlet {
         cat.setBreed(req.getParameter("breed"));
         cat.setColor(req.getParameter("color"));
         cat.setAge(Integer.parseInt(req.getParameter("age")));
+
+        if (req.getSession().getAttribute("cats") == null) {
+            req.getSession().setAttribute("cats", new LinkedHashMap<>());
+        }
+
+        ((Map<String, Cat>)req.getSession().getAttribute("cats")).putIfAbsent(cat.getName(), cat);
+
+        resp.sendRedirect(String.format("/cats/profile?catName=%s", cat.getName()) );
     }
 }
