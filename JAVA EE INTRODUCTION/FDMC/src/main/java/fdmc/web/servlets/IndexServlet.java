@@ -1,6 +1,6 @@
 package fdmc.web.servlets;
 
-import fdmc.util.HtmlReader;
+import fdmc.util.ViewsProvider;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -12,20 +12,17 @@ import java.io.IOException;
 
 @WebServlet("/")
 public class IndexServlet extends HttpServlet {
-    private final static String HTML_INDEX_PATH =
-            "G:\\SoftUni\\SoftUni-source-code\\Java-Web-Module-January-2019\\" +
-            "JAVA EE INTRODUCTION\\FDMC\\src\\resources\\views\\index.html";
 
-    private final HtmlReader htmlReader;
+    private final ViewsProvider viewsProvider;
 
     @Inject
-    public IndexServlet(HtmlReader htmlReader) {
-        this.htmlReader = htmlReader;
+    public IndexServlet(ViewsProvider viewsProvider) {
+        this.viewsProvider = viewsProvider;
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        resp.getWriter().println(htmlReader.readHtmlFile(HTML_INDEX_PATH));
+        resp.getWriter().println(viewsProvider.view("index"));
     }
 }

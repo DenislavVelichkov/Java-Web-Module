@@ -3,14 +3,13 @@ package fdmc.web.servlets;
 import fdmc.domain.entities.Cat;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Map;
 
-@WebServlet("/cats/all")
+//@WebServlet("/cats/all") we dont user the Annotation, because we had the servlet mapped in the web.xml conf
 public class CatAllServlet extends HttpServlet {
 
     @Override

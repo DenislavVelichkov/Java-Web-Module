@@ -1,7 +1,7 @@
 package fdmc.web.servlets;
 
 import fdmc.domain.entities.Cat;
-import fdmc.util.HtmlReader;
+import fdmc.util.ViewsProvider;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -15,20 +15,18 @@ import java.util.Map;
 
 @WebServlet("/cats/create")
 public class CatCreateServlet extends HttpServlet {
-    private final static String CAT_CREATE_HTML_PATH =
-            "G:\\SoftUni\\SoftUni-source-code\\Java-Web-Module-January-2019\\JAVA EE INTRODUCTION\\FDMC\\src\\resources\\views\\cats-create.html";
 
-    private final HtmlReader htmlReader;
+    private final ViewsProvider viewsProvider;
 
     @Inject
-    public CatCreateServlet(HtmlReader htmlReader) {
-        this.htmlReader = htmlReader;
+    public CatCreateServlet(ViewsProvider viewsProvider) {
+        this.viewsProvider = viewsProvider;
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        resp.getWriter().println(this.htmlReader.readHtmlFile(CAT_CREATE_HTML_PATH));
+        resp.getWriter().println(this.viewsProvider.view("cats-create"));
     }
 
     @Override

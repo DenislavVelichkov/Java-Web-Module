@@ -1,7 +1,7 @@
 package fdmc.web.servlets;
 
 import fdmc.domain.entities.Cat;
-import fdmc.util.HtmlReader;
+import fdmc.util.ViewsProvider;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -14,15 +14,13 @@ import java.util.Map;
 
 @WebServlet("/cats/profile")
 public class CatProfileServlet extends HttpServlet {
-    private final static String CAT_PROFILE_HTML_FILE_PATH =
-            "G:\\SoftUni\\SoftUni-source-code\\Java-Web-Module-January-2019\\JAVA EE INTRODUCTION\\FDMC\\src\\resources\\views\\cat-profile.html";
-    private final static String CAT_NOT_EXISTANT =
-            "G:\\SoftUni\\SoftUni-source-code\\Java-Web-Module-January-2019\\JAVA EE INTRODUCTION\\FDMC\\src\\resources\\views\\non-existent-cat.html";
-    private final HtmlReader htmlReader;
+
+    private final ViewsProvider viewsProvider;
+
 
     @Inject
-    public CatProfileServlet(HtmlReader htmlReader) {
-        this.htmlReader = htmlReader;
+    public CatProfileServlet(ViewsProvider viewsProvider) {
+        this.viewsProvider = viewsProvider;
     }
 
     @Override
@@ -34,10 +32,10 @@ public class CatProfileServlet extends HttpServlet {
         String htmlFileContent;
 
         if (cat == null) {
-            htmlFileContent = this.htmlReader.readHtmlFile(CAT_NOT_EXISTANT)
+            htmlFileContent = this.viewsProvider.view("cat-profile")
                     .replace("{{catName}}", req.getQueryString().split("=")[1]);
         }else {
-            htmlFileContent = this.htmlReader.readHtmlFile(CAT_PROFILE_HTML_FILE_PATH)
+            htmlFileContent = this.viewsProvider.view("non-existent-cat")
                     .replace("{{catName}}", cat.getName())
                     .replace("{{catBreed}}", cat.getBreed())
                     .replace("{{catColor}}", cat.getColor())
