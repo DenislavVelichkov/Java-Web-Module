@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public class ViewsProviderImpl implements ViewsProvider {
     @Override
     public String view(String viewName) throws IOException {
-        var viewPath = MessageFormat.format("views/{0}.html", viewName);
+        var viewPath = MessageFormat.format("/views/{0}.html", viewName);
 
         URL url = this.getClass().getClassLoader().getResource(viewPath);
 
