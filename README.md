@@ -1,2 +1,2 @@
 # Java-Web-Module
-Everything about the timeline of the Softuni Java-Web-Course
+Just some excercises and from old instance of the course. It's not official repo.
